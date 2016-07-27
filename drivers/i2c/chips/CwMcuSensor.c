@@ -923,15 +923,9 @@ static int get_proximity(struct device *dev, struct device_attribute *attr, char
 	u8 data[3]={0};
 	uint16_t data2;
 
-	if(mcu_data->enabled_list & (1<<Proximity)){
-		CWMCU_i2c_read(mcu_data, CWSTM32_READ_Proximity, data, 3);
-		data2 = (data[2] << 8) | data[1];
-		return snprintf(buf, PAGE_SIZE, "%x %x \n",data[0],data2);
-	} else {
-		
-		D("get_proximity when proximity is not enabled!!\n");
-		return snprintf(buf, PAGE_SIZE, "%x %x \n", 9, 0);
-	}
+	CWMCU_i2c_read(mcu_data, CWSTM32_READ_Proximity, data, 3);
+	data2 = (data[2] << 8) | data[1];
+	return snprintf(buf, PAGE_SIZE, "%x %x \n",data[0],data2);
 }
 
 static int get_proximity_polling(struct device *dev, struct device_attribute *attr, char *buf){
@@ -1765,7 +1759,7 @@ static void CWMCU_read(struct CWMCU_data *sensor)
 				D("%s: Accelerometer(x, y, z) = (%d, %d, %d), Filtered\n",
 					__func__, data_buff[0], data_buff[1], data_buff[2]);
 			} else {
-				input_report_abs(sensor->input, ABS_ACC_X, 10000);
+				input_report_abs(sensor->input, ABS_ACC_X, 1);
 				input_report_abs(sensor->input, ABS_ACC_X, data_buff[0]);
 				input_report_abs(sensor->input, ABS_ACC_Y, data_buff[1]);
 				input_report_abs(sensor->input, ABS_ACC_Z, data_buff[2]);
@@ -1841,7 +1835,7 @@ static void CWMCU_read(struct CWMCU_data *sensor)
 				D("%s: Gyro(x, y, z) = (%d, %d, %d), Filtered\n",
 					__func__, data_buff[0], data_buff[1], data_buff[2]);
 			} else {
-				input_report_abs(sensor->input, ABS_GYRO_X, 10000);
+				input_report_abs(sensor->input, ABS_GYRO_X, 1);
 				input_report_abs(sensor->input, ABS_GYRO_X, data_buff[0]);
 				input_report_abs(sensor->input, ABS_GYRO_Y, data_buff[1]);
 				input_report_abs(sensor->input, ABS_GYRO_Z, data_buff[2]);
@@ -2060,7 +2054,7 @@ static void CWMCU_read(struct CWMCU_data *sensor)
 				D("%s: LinearAcceleration(0, 1, 2) = (%d, %d, %d), Filtered\n",
 						__func__, data_buff[0], data_buff[1], data_buff[2]);
 			} else {
-				input_report_abs(sensor->input, ABS_LIN_X, 10000);
+				input_report_abs(sensor->input, ABS_LIN_X, 1);
 				input_report_abs(sensor->input, ABS_LIN_X, data_buff[0]);
 				input_report_abs(sensor->input, ABS_LIN_Y, data_buff[1]);
 				input_report_abs(sensor->input, ABS_LIN_Z, data_buff[2]);
